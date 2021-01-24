@@ -18,3 +18,6 @@ sms : sendinblue
 mail : sendinblue
 front : php (sans framework), javascript
 configuration : voir fichier env exemple
+
+bo interface is based on AdminLTE details here:
+https://adminlte.io/docs/2.4/license
