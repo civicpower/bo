@@ -11,13 +11,13 @@ La licence sous laquelle nous publions nos travaux permet à tout un chacun de s
 
 L'implémentation actuelle sur notre plateforme civicpower.io est très simple :
 
-serveurs linux : ubuntu
-base de donnée : mysql 8.0
-serveur web : apache 2.4
-sms : sendinblue
-mail : sendinblue
-front : php (sans framework), javascript
-configuration : voir fichier env exemple
+- serveurs linux : ubuntu
+- base de donnée : mysql 8.0
+- serveur web : apache 2.4
+- sms : sendinblue
+- mail : sendinblue
+- front : php (sans framework), javascript
+- configuration : voir fichier env exemple
 
 bo interface is based on AdminLTE details here:
 https://adminlte.io/docs/2.4/license
