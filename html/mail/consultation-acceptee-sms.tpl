@@ -1,0 +1,1 @@
+Votre consultation suivante a été acceptée : {$ballot.ballot_title}. Cliquez ici pour la la voir : {$smarty.env.APP_HOST}/{$ballot.ballot_shortcode}

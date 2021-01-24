@@ -1,0 +1,1 @@
+{$ballot.asker_name} vous invite à participer à la consultation suivante : {$ballot.ballot_title}. Pour participer, inscrivez-vous ici via votre numéro de mobile : {$smarty.env.APP_HOST}/{cp_mail_shortcode($to,"/sms/{$ballot.ballot_shortcode}",$ballot.ballot_id)}

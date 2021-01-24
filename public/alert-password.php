@@ -1,0 +1,12 @@
+<?php
+project_css_js($fw);
+$fw->set_header_file('blank.tpl');
+$fw->set_footer_file('blank.tpl');
+$fw->set_body_class('login-page');
+$fw->include_css('alert-password');
+$fw->include_css('login');
+$fw->include_js('alert-password');
+$fw->set_canonical('alert-password');
+$fw->smarty->display('alert-password.tpl');
+$fw->go();
+?>

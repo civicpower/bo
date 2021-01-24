@@ -1,0 +1,10 @@
+<?php
+must_be_connected();
+project_css_js($fw);
+$fw->include_css('insights');
+$fw->include_js('insights');
+$fw->add_js('/plugins/chart.js/Chart.min.js');
+$fw->set_canonical('/');
+$fw->smarty->display('insights.tpl');
+$fw->go();
+?>

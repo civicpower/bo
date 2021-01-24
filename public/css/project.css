@@ -1,0 +1,34 @@
+.table-nonfluid {
+   width: auto !important;
+}
+
+.bg-cp-black
+{
+   background-color:#414652!important;
+}
+.bg-cp-green
+{
+   background-color:#5bab9e!important;
+}
+.bg-cp-red
+{
+   background-color:#da5643!important;
+}
+.bg-cp-blue
+{
+   background-color:#2e3547!important;
+}
+.bg-cp-darkgrey
+{
+   background-color:#637687!important;
+}
+.bg-cp-lightgrey
+{
+   background-color:#e1e1e5!important;
+}
+aside.main-sidebar .nav-link.active{
+   background-color:#637687!important;
+}
+body.iframe{
+   overflow-x: hidden;
+}

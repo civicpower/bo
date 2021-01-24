@@ -1,0 +1,74 @@
+# System / Log files
+*~
+*.DS_Store
+*.log
+.project
+.DS_Store
+
+# Sass Cache
+.sass-cache
+
+# ETC
+TODO
+test.html
+ad.js
+/.cache/
+/html/cache/*
+xml/*
+tmp/*
+logs/*
+.idea/
+*.iml
+*.zip
+
+# Project files
+.idea
+nbproject
+nbproject/private
+.vscode/
+.vs/
+
+# Node / Bower
+node_modules/
+bower_components/
+
+# Plugins
+/public/plugins/**/*.html
+/public/plugins/**/*.less
+/public/plugins/**/*.md
+/public/plugins/**/*.scss
+/public/plugins/**/*.ts
+/public/plugins/**/bower.json
+/public/plugins/**/package.json
+/public/plugins/**/webpack.config.js
+/public/plugins/**/demo/
+/public/plugins/**/demos/
+/public/plugins/**/dev/
+/public/plugins/**/example/
+/public/plugins/**/examples/
+/public/plugins/**/less/
+/public/plugins/**/test/
+/public/plugins/**/tests/
+/public/plugins/daterangepicker/website/
+/public/plugins/daterangepicker/drp.png
+/public/plugins/daterangepicker/moment.min.js
+/public/plugins/daterangepicker/package.js
+/public/plugins/daterangepicker/website.css
+/public/plugins/daterangepicker/website.js
+/public/plugins/jquery-ui/AUTHORS.txt
+/public/plugins/jquery-ui/external/jquery/jquery.js
+/public/plugins/inputmask/bindings/
+/public/plugins/flot/plugins/jquery*.js
+!/public/plugins/flot/plugins/jquery.flot.*.js
+!/public/plugins/**/LICENSE.md
+!/public/plugins/**/LICENSE.txt
+!/public/plugins/**/license.md
+!/public/plugins/**/license.txt
+!/public/plugins/**/LICENSE
+!/public/plugins/**/license
+!/public/plugins/**/COPYING
+
+# Images
+/public/uploads/pp/*
+/public/uploads/voters/*
+

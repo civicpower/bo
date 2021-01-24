@@ -1,0 +1,35 @@
+h1.html_title{
+    display:none;
+}
+.input-shortcode{
+    position: absolute;
+    left: -9999px;
+}
+.btn-shortcode-url{
+    position:relative;
+}
+.alert.shortcode-url-copied{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border-radius: 2px;
+    display:none;
+}
+
+tr.ballot_active_0{
+    font-size:0.8em;
+    opacity: 0.5;
+}
+tr.ballot_active_0 td{
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+}
+
+
+
+#input_ballot_active{
+    width: 30px;
+}

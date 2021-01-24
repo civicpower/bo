@@ -1,0 +1,30 @@
+fieldset.printr_op,fieldset.printr_cl{
+	border:1px dotted #B5EFBD;
+	font-family:verdana;
+	font-size:7pt;
+	margin:3px 7px;
+	padding:0px;
+}
+fieldset.printr_op legend,fieldset.printr_cl legend{
+	background-color:#B5EFBD;
+	cursor:pointer;
+	font-size:7pt;
+	margin:0px;
+	padding:0px 8px;
+}
+fieldset.printr_cl{
+	border-top:1px solid #B5EFBD;
+}
+fieldset.printr_op{
+	border:1px solid #B5EFBD;
+}
+fieldset.printr_op div,fieldset.printr_cl div{
+	margin:0px;
+	padding:8px;
+}
+fieldset.printr_op div{
+	display:block;
+}
+fieldset.printr_cl div{
+	display:none;
+}

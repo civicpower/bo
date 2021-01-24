@@ -1,0 +1,1 @@
+Votre consultation suivante a été refusée : {$ballot.ballot_title}. Cliquez ici pour la modifier : https://{$smarty.env.SITE_URL}/ballot?ballot_id={$ballot.ballot_id}

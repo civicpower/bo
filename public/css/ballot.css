@@ -1,0 +1,179 @@
+#modal_ballot_error_list{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#modal_ballot_error_list li{
+    background-color: #FFF;
+    color: #dc3545;
+    padding: 5px 7px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.todo-list>li .text {
+    display: inline-block;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+
+.card-option-list .form-label-group{
+    margin-bottom: 0!important;
+}
+.form-label-group label{
+    color: #AAA!important;
+    font-weight: normal!important;
+}
+.card-option-list .ui-handle{
+    margin:0;
+    padding: 0;
+    text-align: center;
+}
+.card-option-list .todo-list .ui-sortable-2nd{
+    margin:0;
+    margin-left:0;
+}
+.card-question{
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(226,238,255,1) 100%);
+    background: -webkit-linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(226,238,255,1) 100%);
+    background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(226,238,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#e2eeff",GradientType=1);
+}
+li.option-item,.card-question{
+    display:none;
+}
+.card-option-list .card-body{
+    padding-top:0;
+}
+li.option-item{
+    padding:5px 10px;
+}
+
+#question_list .card-question:first-child .btn-question-up{
+    display: none;
+}
+#question_list .card-question:last-child .btn-question-down{
+    display: none;
+}
+.voter-item{
+    min-height: 50px;
+    box-shadow: none;
+}
+.voter-item:hover {
+    background-color: #f3f3f3;
+}
+.voter-item .info-box-icon{
+    font-size:1.4rem;
+    width: 40px;
+}
+.btn-remove-filter{
+    visibility: hidden;
+}
+.voter-item:hover .btn-remove-filter {
+    visibility: visible;
+}
+#voters-list{
+    padding: 0.7rem 0.2rem;
+    overflow-y: scroll;
+    min-height: 50px;
+    max-height: 500px;
+}
+#alert-voters-error{
+    display:none;
+}
+
+#result_list{
+    width: 100%;
+    max-width: 700px;
+    border-radius: 10px;
+    background-color: #EEEEEE;
+    padding: 10px 20px;
+    box-shadow: 1px 1px 1px #00000082;
+}
+#result_list .div-option_list{
+    display: block;
+}
+#result_list .div_row{
+    margin-bottom: 10px;
+}
+#result_list .div-question_title{
+    padding: 10px 20px;
+    font-weight: bold;
+}
+#result_list .div-question_description{
+    padding: 0px 20px 0 20px;
+    font-size:0.9em;
+}
+#result_list .div-option_title{
+    padding: 10px 20px;
+}
+#result_list .div-nb_vote{
+    padding: 10px 20px;
+}
+#result_list .div-prc_vote{
+    padding: 10px 20px;
+    background-repeat: repeat-y;
+    color: #FFF;
+    font-weight: 500;
+    text-shadow: 2px 2px 0px #00000063;
+    background-image: url(/images/bg-prc-vote.png);
+    background-size: 100%;
+    background-color: black;
+}
+.div_participation{
+    padding:10px;
+    margin-bottom:10px;
+}
+.span_participation {
+    padding:10px 20px;
+    background-color: #EEEEEE;
+    border-radius: 10px;
+    font-weight:bold;
+}
+.option-list-fixe{
+    list-style: none;
+    margin: 0;
+    overflow: auto;
+    padding: 0;
+}
+
+.option-list-fixe .ui-handle{
+    opacity:0;
+}
+.option-list-fixe .option-item:not(.can_be_disabled) .col-delete {
+    display:none;
+}
+#ballot_date_div{
+    background: #F5F5F5;
+    border-radius: 5px;
+    padding: 10px 18px;
+    border:1px solid #ced4da;
+}
+.icheck-primary{
+    display: block!important;
+    background: #F5F5F5;
+    border-radius: 5px;
+    padding: 10px 9px!important;
+    border: 1px solid #ced4da;
+}
+.icheck-primary:hover {
+    border-color: #333;
+}
+.icheck-primary input:first-child+label::before{
+    background-color: #FFF;
+    border-color:#555!important;
+}
+
+
+div.card-question .div-qcm{
+    display: none;
+}
+div.card-question.type-qcm .div-qcm{
+    display: flex;
+}
+div.card-question.type-qcu .option-998{
+    display:none!important;
+}
+
