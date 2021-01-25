@@ -1,4 +1,4 @@
-<li class="option-item option-{$option.option_rank} {if $option.option_can_be_disabled eq 1}can_be_disabled{/if}" data-option_id="{$option.option_id}">
+<li class="option-item" data-option_id="{$option.option_id}">
     <div class="row w-100">
         {if $can_edit}
             <div class="col-1 handle ui-sortable-handle ui-handle">

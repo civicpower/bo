@@ -25,16 +25,6 @@ function local_update_ballot($status_id,$where) {
     printr2($sql);
     foreach ($list as $k => $v) {
         civicpower_update_ballot_status($v['ballot_id'], $status_id);
-        if($status_id == $_ENV['STATUS_BALLOT_VALIDE_EN_COURS']){
-            civicpower_enqueue_ballot_message(
-                $v['ballot_id'],
-                'mail/invitation.tpl',
-                'mail/invitation-sms.tpl',
-                "Vous êtes invité à participer à une consultation par __asker_name__",
-                "Votre avis compte, exprimez-vous",
-                "ballot_"
-            );
-        }
     }
 }
-
+?>

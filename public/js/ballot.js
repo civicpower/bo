@@ -14,31 +14,8 @@
         bind_cities();
         bind_admin();
         bind_cb_asap();
-        bind_question_type();
     });
 
-    function bind_question_type() {
-        $(document).on("change","select.select-question-type",function(){
-            var $select = $(this);
-            var $parent = $select.closest(".card-question");
-            var value = $select.val();
-            var list = ["qcm","qcu"];
-            for(var i in list){
-                if(list[i]!=value){
-                    $parent.removeClass("type-"+String(list[i]));
-                }
-
-            }
-            if(! $parent.hasClass("type-"+String(value))){
-                $parent.addClass("type-"+String(value));
-            }
-            if(value=="qcu"){
-                $parent.find(".div-qcm").find(".input-nb-choice").val(1).trigger("change");
-            }else{
-                $parent.find(".div-qcm").find(".input-nb-choice-max").val(2).trigger("change");
-            }
-        });
-    }
     function bind_cb_asap() {
         $(".cb_asap").on("change", function () {
             var value = $(this).val();
@@ -818,21 +795,6 @@
         return res;
     }
 
-    function add_option_fixe(label,id,$this_question,rank,can_be_disabled) {
-        var $init_option = $(".option-item-stock li.option-item").first();
-        var $clone_option = $init_option.clone();
-        if(can_be_disabled){
-            $clone_option.addClass("can_be_disabled");
-        }
-        $clone_option.addClass("option-"+String(rank));
-        $clone_option.appendTo($this_question.find(".option-list-div .option-list-fixe"));
-        $clone_option.slideDown("fast", function () {
-            var $option = $(this);
-            $option.find("input:first").val(label).attr("disabled", true);
-            project_blink($option, "bg-warning", 2);
-            $option.attr("data-option_id", id);
-        });
-    }
 
     function bind_question() {
         $("#btn-add-question").on("click", function () {
@@ -864,8 +826,18 @@
                             console.log(jsone.data.question_id);
                             $this_question.attr("data-question_id", jsone.data.question_id);
                             project_blink($this_question, "bg-warning", 2);
-                            add_option_fixe("Aucun",jsone.data.option_id2,$this_question,998,true);
-                            add_option_fixe("Ne se prononce pas",jsone.data.option_id,$this_question,999,true);
+                            if (true) {
+                                var $init_option = $(".option-item-stock li.option-item").first();
+                                var $clone_option = $init_option.clone();
+                                $clone_option.appendTo($this_question.find(".option-list-div .option-list-fixe"));
+                                $clone_option.slideDown("fast", function () {
+                                    var $option = $(this);
+                                    $option.find("input:first").val("Ne se prononce pas").attr("disabled", true);
+                                    project_blink($option, "bg-warning", 2);
+                                    $option.attr("data-option_id", jsone.data.option_id);
+                                });
+
+                            }
                         },
                         error: function () {
                             $this_question.slideUp("fast", function () {
@@ -879,29 +851,12 @@
             });
         });
         $(document).on("click", ".btn-save-question", function () {
-
             var $btn = $(this);
-            $.ajax({
-                type: "POST",
-                url: "/ballot.php",
-                dataType: "json",
-                data: {
-                    action: "check_ballot_integrity",
-                    ballot_id: $("#ballot_id").val()
-                },
-                success: function (jsone) {
-                    $btn.parent().find("input[data-field]").each(function () {
-                        var $input = $(this);
-                        setTimeout(function () {
-                            project_blink($input, "bg-success", 2);
-                        }, Math.random() * 100);
-                    });
-                },
-                error: function (res) {
-                    var jsone = res.responseJSON;
-                    console.log(jsone);
-                    alert(jsone.message);
-                }
+            $btn.parent().find("input[data-field]").each(function () {
+                var $input = $(this);
+                setTimeout(function () {
+                    project_blink($input, "bg-success", 2);
+                }, Math.random() * 200);
             });
         });
         $(document).on("click", "button.btn-question-up,button.btn-question-down", function () {
@@ -932,7 +887,7 @@
             });
 
         });
-        $(document).on("change", ".card-question input[data-field^='question_']", function (e) {
+        $(document).on("change", ".card-question input[data-field^='question_']", function () {
             var $input = $(this);
             $question = $input.closest(".card-question");
             $.ajax({
@@ -948,12 +903,8 @@
                 success: function (jsone) {
                     project_blink($input, "bg-success", 2);
                 },
-                error: function (jsone,b,c) {
-                    if(typeof jsone.responseJSON.message == "string"){
-                        alert(jsone.responseJSON.message);
-                    }else{
-                        alert("Une erreur est survenue");
-                    }
+                error: function () {
+                    alert("Une erreur est survenue");
                 }
             });
         });

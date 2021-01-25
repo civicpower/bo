@@ -49,7 +49,7 @@ function bo_is_connected() {
 function cp_asker_token($asker_id = null) {
     $res = "";
     if (bo_is_connected()) {
-        $res = civicpower_hash_db(false, $asker_id, $_ENV['SALT_ASKER']);
+        $res = civicpower_hash_db(false, $asker_id, $_ENV['SALT_USER']);
     }
     return $res;
 }
@@ -841,39 +841,8 @@ function civicpower_invoke_ballot_rejected($ballot_id) {
         civicpower_enqueue_sms($user['user_phone_international'], $sms_text, $unicite, $hashtag);
     }
 }
-function civicpower_remove_options_aucun_if_not_qcm($ballot_id) {
-    $qtab = sql("
-        SELECT *
-        FROM bal_question
-        WHERE question_ballot_id = '".for_db($ballot_id)."'
-        AND question_active = '1'
-    ");
-    $options_aucun = [];
-    foreach($qtab as $k => $v){
-        if($v['question_nb_vote_min']==1 &&  $v['question_nb_vote_max']==1){
-            $options = sql("
-                SELECT *
-                FROM bal_option
-                WHERE option_question_id = '".for_db($v['question_id'])."'
-                AND (
-                    (option_can_be_deleted = '0' AND option_title LIKE 'Aucun')
-                )
-                AND option_active = '1'
-            ");
-            foreach($options as $kk => $vv){
-                $options_aucun[] = $vv['option_id'];
-            }
-        }
-    }
-    sql("
-        UPDATE bal_option SET
-        option_active = '0'
-        WHERE option_id IN ('".implode("','", $options_aucun )."')
-    ");
-}
 function civicpower_invoke_ballot_accepted($ballot_id) {
     $ballot = civicpower_ballot_and_asker($ballot_id);
-    civicpower_remove_options_aucun_if_not_qcm($ballot_id);
     $user = sql_shift("
         SELECT usr_user.*
         FROM usr_user

@@ -12,9 +12,8 @@
         {assign var="can_edit" value=true}
     {/if}
 {/if}
-
-{if $user.user_is_admin && $user.user_id != $ballot.asker_user_id && $ballot_mode eq "update"}
-    {assign var="can_edit" value=false}
+{if $user.user_is_admin}
+    {assign var="can_edit" value=true}
 {/if}
 
 {if $can_edit}
@@ -22,7 +21,9 @@
 {else}
     {assign var="input_disabled" value="disabled=\"disabled\""}
 {/if}
-
+{if $user.user_is_admin}
+    {assign var="input_disabled" value=""}
+{/if}
 
 
 <input type="hidden" id="zad" value="{$user.user_is_admin}"/>

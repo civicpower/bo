@@ -1,8 +1,4 @@
-{assign var="q_type" value="qcu"}
-{if $question.question_nb_vote_min gt 1 || $question.question_nb_vote_max gt 1}
-    {assign var="q_type" value="qcm"}
-{/if}
-<div data-question_id="{$question.question_id}" class="card-question card card-primary card-outline type-{$q_type}">
+<div data-question_id="{$question.question_id}" class="card-question card card-primary card-outline">
     <div class="card-header">
         {if $can_edit}
             <div class="div-btn-question">
@@ -15,46 +11,9 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                <div class="form-group mw60 mx-auto">
-                    <label for="question_title">Libellé de la question</label>
+                <div class="form-label-group mw60 mx-auto">
                     <input {$input_disabled} value="{$question.question_title}" type="text" data-field="question_title" class="ajaxable form-control" placeholder="Libellé de la question" required="required">
-                </div>
-                <div class="form-group question-type">
-                    <label>Type de question</label>
-                    <select class="form-control select-question-type">
-                        <option value="qcu" {if $q_type eq "qcu"}selected="selected"{/if}>Question à choix unique</option>
-                        <option value="qcm" {if $q_type eq "qcm"}selected="selected"{/if}>Question à choix multiple</option>
-                    </select>
-                    <div class="div-qcm row">
-                        <div class="form-group col-md-6">
-                            <label>Nb. choix minimum</label>
-                            <input
-                                    min="1"
-                                    max="50"
-                                    {$input_disabled}
-                                    value="{if $question.question_nb_vote_min|is_numeric && $question.question_nb_vote_min gt 0}{$question.question_nb_vote_min}{else}1{/if}"
-                                    type="number"
-                                    data-field="question_nb_vote_min"
-                                    class="ajaxable form-control form-control-lg input-nb-choice input-nb-choice-min"
-                                    placeholder="Min"
-                                    required="required"
-                            >
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Nb. choix maximum</label>
-                            <input
-                                    min="1"
-                                    max="50"
-                                    {$input_disabled}
-                                    value="{if $question.question_nb_vote_max|is_numeric && $question.question_nb_vote_max gt 0}{$question.question_nb_vote_max}{else}1{/if}"
-                                    type="number"
-                                    data-field="question_nb_vote_max"
-                                    class="ajaxable form-control form-control-lg input-nb-choice input-nb-choice-max"
-                                    placeholder="Max"
-                                    required="required"
-                            >
-                        </div>
-                    </div>
+                    <label for="question_title">Libellé de la question</label>
                 </div>
                 {if false}
                     <div class="form-label-group mw60 mx-auto">

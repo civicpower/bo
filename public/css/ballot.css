@@ -142,7 +142,7 @@ li.option-item{
 .option-list-fixe .ui-handle{
     opacity:0;
 }
-.option-list-fixe .option-item:not(.can_be_disabled) .col-delete {
+.option-list-fixe .col-delete {
     display:none;
 }
 #ballot_date_div{
@@ -165,15 +165,3 @@ li.option-item{
     background-color: #FFF;
     border-color:#555!important;
 }
-
-
-div.card-question .div-qcm{
-    display: none;
-}
-div.card-question.type-qcm .div-qcm{
-    display: flex;
-}
-div.card-question.type-qcu .option-998{
-    display:none!important;
-}
-
