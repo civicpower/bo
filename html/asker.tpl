@@ -18,11 +18,11 @@
         <input type="hidden" id="asker_id" name="asker_id" value="{$asker.asker_id}"/>
         {if isset($asker.asker_id) && is_numeric($asker.asker_id) && $asker.asker_id>0}
             <div class="col-md-3">
-                <div class="card card-primary card-outline">
+                <div class="card card-gray-dark card-outline">
                     <div class="card-body box-profile">
                         <h3 class="profile-username text-center">{$asker.asker_name}</h3>
                         <div class="text-center">
-                            <img class="profile-user-img img-fluid img-circle" src="/uploads/pp/{cp_asker_token($asker.asker_id)}.png?rand={rand(0,99999)}_{rand(0,99999)}" alt="{$asker.asker_name}"/>
+                            <img class="profile-user-img img-fluid img-circle" src="/uploads/pp/{cp_asker_token($asker.asker_id)}.png?rand={random_int(0,99999)}_{random_int(0,99999)}" alt="{$asker.asker_name}"/>
                         </div>
                         <div class="text-center mt-2 mb-4">
                             <div id="btn-import-file" class="btn btn-file btn-light">
@@ -30,33 +30,33 @@
                                 <input {$disabled} type="file" id="pp-file"/>
                             </div>
                         </div>
-                        <small class="text-muted">
+                        <div class="text-muted text-sm cp_lh_1 font-italic">
                             Cette photo est visible par les votants : elle est publique et liée au profil organisateur.
                             Elle ne constitue pas une donnée personnelle de l’utilisateur, dont l’identité n’est pas divulguée.
-                        </small>
+                        </div>
                     </div>
                 </div>
             </div>
         {/if}
         <div class="col-md-9">
-            <div class="card">
+            <div class="card card-gray-dark card-outline">
                 <div class="card-body">
                     <form method="post" action="/asker.php" id="form_profile" class="form-horizontal">
                         <input type="hidden" name="action" value="save_asker"/>
                         <input type="hidden" name="asker_id" value="{$smarty.request.asker_id|intval}"/>
                         <div class="form-group row">
                             <label for="asker_name" class="col-sm-2 col-form-label">Libellé du profil</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-4">
                                 <input {$disabled} type="text" value="{$asker.asker_name|for_input}" class="form-control" name="asker_name" id="asker_name" placeholder="Nom public auprès des votants"/>
                             </div>
-                            <small class="text-muted col-sm-10 offset-sm-2">
+                            <div class="text-muted text-sm col-sm-10 offset-sm-2 cp_lh_1">
                                 Pour une Mairie ou une Association, inclure l’article défini : “La Mairie de XXX”, “L’association YYY”.<br />
                                 Ce libellé est public et lié au profil organisateur. Il ne constitue pas une donnée personnelle de l’utilisateur, dont l’identité n’est pas divulguée.
-                            </small>
+                            </div>
                         </div>
                         <div class="form-group row">
                             <div class="offset-sm-2 col-sm-10">
-                                <button {$disabled} type="submit" class="btn btn-primary">Enregistrer</button>
+                                <button {$disabled} type="submit" class="bg-cp-darkpurple btn text-white btn-lg">Enregistrer</button>
                             </div>
                         </div>
                     </form>

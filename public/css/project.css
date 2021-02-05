@@ -1,34 +1,56 @@
-.table-nonfluid {
+.table-nonfluid{
    width: auto !important;
 }
 
-.bg-cp-black
-{
+.bg-cp-black{
    background-color:#414652!important;
 }
-.bg-cp-green
-{
-   background-color:#5bab9e!important;
+.bg-cp-green{
+   background-color:#4aa5a3!important;
 }
-.bg-cp-red
-{
+.bg-cp-red{
    background-color:#da5643!important;
 }
-.bg-cp-blue
-{
+.bg-cp-redflash{
+   background-color:#ff2f3e!important;
+}
+.bg-cp-blue{
    background-color:#2e3547!important;
 }
-.bg-cp-darkgrey
-{
-   background-color:#637687!important;
+.bg-cp-grey{
+   background-color:#afafaf!important;
 }
-.bg-cp-lightgrey
-{
+.bg-cp-darkgrey{
+   background-color:#727e9b!important;
+}
+.bg-cp-darkpurple{
+   background-color:#424651!important;
+}
+.bg-cp-purple{
+   background-color:#4763b2!important;
+}
+.bg-cp-lightgrey{
    background-color:#e1e1e5!important;
 }
 aside.main-sidebar .nav-link.active{
-   background-color:#637687!important;
+   background-color:#727e9b!important;
+}
+aside.main-sidebar .nav-link:hover {
+   background-color:#d0d4dd!important;
+   color:#000!important;
 }
 body.iframe{
    overflow-x: hidden;
+}
+.cp_lh_1{
+   line-height: 1!important;
+}
+.btn.bg-cp-redflash{
+   border-color: #ff2f3e;
+}
+.btn.bg-cp-darkpurple{
+   border-color:#424651!important;
+}
+.btn.bg-cp-purple{
+   border-color:#4763b2!important;
 }

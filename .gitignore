@@ -1,25 +1,16 @@
 # System / Log files
-*~
 *.DS_Store
 *.log
 .project
 .DS_Store
+#.htaccess
+#.htpasswd
+
+# Archives
+*.zip
 
 # Sass Cache
 .sass-cache
-
-# ETC
-TODO
-test.html
-ad.js
-/.cache/
-/html/cache/*
-xml/*
-tmp/*
-logs/*
-.idea/
-*.iml
-*.zip
 
 # Project files
 .idea
@@ -68,7 +59,35 @@ bower_components/
 !/public/plugins/**/license
 !/public/plugins/**/COPYING
 
-# Images
+
+# Docs
+/docs/_site/
+/docs/vendor/
+/docs/.bundle/
+/docs_html/
+.jekyll-cache/
+.jekyll-metadata
+
+# ETC
+TODO
+test.html
+ad.js
+/.cache/
+/html/cache/*
+
+xml/*
+tmp/*
+logs/*
+.idea/
+
+update.sh
 /public/uploads/pp/*
 /public/uploads/voters/*
 
+*.iml
+*.xml
+/html/cache/
+
+composer.lock
+composer.phar
+*~

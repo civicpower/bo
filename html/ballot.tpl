@@ -12,8 +12,9 @@
         {assign var="can_edit" value=true}
     {/if}
 {/if}
-{if $user.user_is_admin}
-    {assign var="can_edit" value=true}
+
+{if $user.user_is_admin && $user.user_id != $ballot.asker_user_id && $ballot_mode eq "update"}
+    {assign var="can_edit" value=false}
 {/if}
 
 {if $can_edit}
@@ -21,9 +22,7 @@
 {else}
     {assign var="input_disabled" value="disabled=\"disabled\""}
 {/if}
-{if $user.user_is_admin}
-    {assign var="input_disabled" value=""}
-{/if}
+
 
 
 <input type="hidden" id="zad" value="{$user.user_is_admin}"/>
@@ -37,6 +36,9 @@
         </select>
     {/if}
 {/if}
+
+
+{capture assign=div_publish}{/capture}
 {if $ballot.ballot_bstatus_id eq $smarty.env.STATUS_BALLOT_EN_COURS_DE_CREATION}
     {if $user.user_is_admin}
         <div class="alert alert-default-info">
@@ -45,13 +47,17 @@
         </div>
     {/if}
     {if $user.user_id eq $ballot.asker_user_id}
-        <div class="alert alert-default-info">
-            Votre consultation est en cours de création.
-            Pour la publier, cliquez ici : &nbsp;
-            <button type="button" class="btn btn-danger btn-sm bg-cp-red" id="btn-open-publish">Publier ma consultation</button>
-        </div>
+        {capture assign=div_publish}
+            <div class="alert text-right">
+                Votre consultation est en cours de création.
+                Pour la publier, cliquez ici : &nbsp;
+                <button type="button" class="btn btn-danger btn-lg bg-cp-redflash btn-open-publish" id="">Publier ma consultation</button>
+            </div>
+        {/capture}
     {/if}
 {/if}
+
+
 {if $ballot.ballot_bstatus_id eq $smarty.env.STATUS_BALLOT_EN_ATTENTE_DE_VALIDATION}
     {if $user.user_is_admin}
         <div class="alert alert-default-warning">
@@ -64,7 +70,9 @@
     {if $user.user_id eq $ballot.asker_user_id}
         <div class="alert alert-default-warning">
             Votre consultation est en attente de validation.
-            <button class="btn btn-primary btn-sm" id="btn-edit">Modifier la consultation</button>
+            {*
+                <button class="btn btn-primary btn-sm" id="btn-edit">Modifier la consultation</button>
+            *}
         </div>
     {/if}
 {/if}
@@ -117,13 +125,15 @@
 
 
 <div class="row">
-    <div class="col-md-4 col-12">
+    <div class="{if $ballot_mode eq "creation"}col-md-8{else}col-md-4{/if} col-12">
         <div class="sticky-top">
             <div class="card card-secondary">
                 <div class="card-header  bg-cp-darkgrey">
                     <h3 class="card-title">{t}Infos de la consultation{/t}</h3>
                     {if isset($ballot.ballot_id) && $can_edit}
-                        <button type="submit" class="btn-remove-ballot btn btn-xs btn-dark float-right bg-cp-black"><i class="fas fa-trash"></i> Supprimer cette consultation</button>
+                        <button type="submit" class="btn-remove-ballot btn btn-sm float-right">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     {/if}
                 </div>
                 <div class="card-body">
@@ -211,7 +221,7 @@
                             </div>
                             {if $can_edit}
                                 <div>
-                                    <button type="submit" class="btn btn-dark bg-cp-blue"><i class="fas fa-check"></i> {if !isset($ballot.ballot_id)}Continuer ...{else}Enregistrer{/if}</button>
+                                    <button type="submit" class="btn btn-lg btn-dark bg-cp-darkpurple"><i class="fas fa-check"></i> {if !isset($ballot.ballot_id)}Continuer ...{else}Enregistrer{/if}</button>
                                 </div>
                             {/if}
                         {/if}
@@ -229,8 +239,8 @@
         {/if}
         <div class="col-md-8 col-12">
             {*            {printr($ballot)}*}
-            <div class="card card-primary card-tabs">
-                <div class="card-header p-1 pt-1  bg-cp-blue">
+            <div class="card card-gray-dark card-tabs">
+                <div class="card-header p-1 pt-1 bg-cp-darkgrey">
                     <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                         <li class="nav-item">
                             <a
@@ -272,6 +282,9 @@
                 <div class="card-body">
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         <div class="tab-pane fade active show" id="custom-tabs-one-questions" role="tabpanel" aria-labelledby="custom-tabs-one-questions-tab">
+                            <div class="mb-2">
+                                {$div_publish}
+                            </div>
                             {if $mode eq "edit"}
                                 <div id="question_list">
                                     {foreach from=$ballot.question item=item key=key}
@@ -279,7 +292,7 @@
                                     {/foreach}
                                 </div>
                                 {if $can_edit}
-                                    <button id="btn-add-question" class="btn btn-sm btn-block btn-danger bg-cp-red"><i class="fa fa-plus"></i> &nbsp; Ajouter une question</button>
+                                    <button id="btn-add-question" class="btn btn-lg btn-block btn-danger bg-cp-darkpurple"><i class="fa fa-plus"></i> &nbsp; Ajouter une question</button>
                                 {/if}
                             {else}
                                 <div class="div_participation">
@@ -301,6 +314,9 @@
                                     {/foreach}
                                 </div>
                             {/if}
+                            <div class="mt-2">
+                                {$div_publish}
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-one-voters" role="tabpanel" aria-labelledby="custom-tabs-one-voters-tab">
                             {include file="block/block-voters-tab.tpl"}

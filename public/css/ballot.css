@@ -142,7 +142,7 @@ li.option-item{
 .option-list-fixe .ui-handle{
     opacity:0;
 }
-.option-list-fixe .col-delete {
+.option-list-fixe .option-item:not(.can_be_disabled) .col-delete {
     display:none;
 }
 #ballot_date_div{
@@ -164,4 +164,19 @@ li.option-item{
 .icheck-primary input:first-child+label::before{
     background-color: #FFF;
     border-color:#555!important;
+}
+
+
+div.card-question .div-qcm{
+    display: none;
+}
+div.card-question.type-qcm .div-qcm{
+    display: flex;
+}
+div.card-question.type-qcu .option-998{
+    display:none!important;
+}
+
+.nav-tabs .nav-link {
+    border-color: #e9ecef #e9ecef #dee2e6;
 }

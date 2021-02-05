@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="col-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-gray-dark card-outline">
             <div class="card-header">
                 <h2 class="h1 card-title">{$seo_title}</h2>
             </div>
@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-sm-12">
                             <label for=""></label>
-                            <button type="submit" class="btn btn-lg btn-primary">RECHERCHER &nbsp; <i class="fas fa-search"></i></button>
+                            <button type="submit" class="btn btn-lg bg-cp-purple text-white">RECHERCHER &nbsp; <i class="fas fa-search"></i></button>
                         </div>
 
                     </div>

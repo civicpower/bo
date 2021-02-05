@@ -12,6 +12,7 @@ try{
 	    $bodyclass=[];
 	    $bodyclass[] = 'body_onlyphone';
 	    $bodyclass[] = 'sidebar-mini';
+	    $bodyclass[] = 'skin-black-light';
 	    $bodyclass[] = 'layout-fixed';
 	    if(request_exists("iframe")){
             $bodyclass[] = 'iframe';

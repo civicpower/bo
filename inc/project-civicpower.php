@@ -1,4 +1,8 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 function civicpower_load_salt(){
     if ( isset($_ENV['EGREGORE']) && ($_ENV['EGREGORE']==TRUE) ) {
         if ( ( $f=fopen($_ENV['EGREGORE'],'r') ) <> FALSE ) {
@@ -49,7 +53,7 @@ function bo_is_connected() {
 function cp_asker_token($asker_id = null) {
     $res = "";
     if (bo_is_connected()) {
-        $res = civicpower_hash_db(false, $asker_id, $_ENV['SALT_USER']);
+        $res = civicpower_hash_db(false, $asker_id, $_ENV['SALT_ASKER']);
     }
     return $res;
 }
@@ -189,20 +193,22 @@ function ajax_assert_publishable_ballot($ballot_id) {
             AND option_active = '1'
             ORDER BY option_rank ASC
         ");
-        if (count($options) <= 2) {
+        if (count($options) < 2) {
             ajax_error("Chaque question doit avoir au minimum 2 réponses possibles.", "too_few_options", $questions);
         }
-        $nspp = false;
-        foreach ($options as $k => $v) {
-            if ($v["option_can_be_deleted"] == '1') {
-                $nspp = true;
+        if(false) {
+            $nspp = false;
+            foreach ($options as $k => $v) {
+                if ($v["option_can_be_deleted"] == '1') {
+                    $nspp = true;
+                }
+                if (strlen(trim($v['option_title'])) <= 0) {
+                    $option_title_filled = false;
+                }
             }
-            if (strlen(trim($v['option_title'])) <= 0) {
-                $option_title_filled = false;
+            if ($nspp === false) {
+                ajax_error("Chaque question doit avoir une réponse 'ne se prononce pas'", "nspp_option_missing");
             }
-        }
-        if ($nspp === false) {
-            ajax_error("Chaque question doit avoir une réponse 'ne se prononce pas'", "nspp_option_missing");
         }
         $questions[$k]["options"] = $options;
     }
@@ -226,6 +232,8 @@ function ajax_assert_option_not_duplicate($option_id, $value) {
             FROM bal_option
             WHERE option_question_id = '" . for_db($question_id) . "'
             AND TRIM(option_title) LIKE '" . for_db(trim($value)) . "'
+            AND option_active = '1'
+            AND option_id != '".for_db($option_id)."'
         "));
         if ($nb > 0) {
             ajax_error("Cette réponse existe déja pour cette question", "option_already_exists");
@@ -425,9 +433,9 @@ function cp_editable_status_list() {
 }
 function civicpower_hash_db($sql_language, $string, $salt = "") {
     if ($sql_language) {
-        return "SHA1(CONCAT($string,'" . for_db($_ENV['GLOBAL_SALT']) . "','" . for_db($salt) . "'))";
+        return "SHA2(CONCAT($string,'" . for_db($_ENV['GLOBAL_SALT']) . "','" . for_db($salt) . "'),256)";
     } else {
-        return sha1("" . $string . $_ENV['GLOBAL_SALT'] . $salt);
+        return hash('sha256',"" . $string . $_ENV['GLOBAL_SALT'] . $salt);
     }
 }
 function cp_new_ballot_shortcode() {
@@ -436,7 +444,7 @@ function cp_new_ballot_shortcode() {
     $possible_len = strlen($possible);
     $res = '';
     for ($i = 0; $i < $length; $i++) {
-        $res .= $possible[rand(0, $possible_len - 1)];
+        $res .= $possible[random_int(0, $possible_len - 1)];
     }
     $nb_already = intval(sql_unique("
         SELECT COUNT(*) AS nb
@@ -511,7 +519,7 @@ function civicpower_resize_image($imagePath = '', $newPath = '', $newWidth = 0, 
     $newImage = imagecreatetruecolor($max, $max);
     imagealphablending($newImage, false);
     imagesavealpha($newImage, true);
-    $color = imagecolorallocatealpha($newImage, 255, 255, 255, 255);
+    $color = imagecolorallocatealpha($newImage, 255, 255, 255, 0);
     imagefill($newImage, 0, 0, $color);
     imagesavealpha($newImage, true);
     imagecopyresampled($newImage, $image, 0 - (-1 * $newWidth + $w) / 2, 0 - (-1 * $newHeight + $h) / 2, 0, 0, $w + 1, $h + 1, $width, $height);
@@ -556,56 +564,130 @@ function civicpower_resize_image($imagePath = '', $newPath = '', $newWidth = 0, 
     return $newPath;
 }
 function civicpower_send_email($email, $subject, $html,$sender_name="Civicpower",$sender_email="contact@civicpower.io", $user_id="") {
-    $curl = curl_init();
+
     $text = strip_tags(str_replace(array('<br>', '<br/>', '<br />'), "\r\n", $html));;
-    $post = [
-        "sender" => [
-            "name" => $sender_name,
-            "email" => $sender_email
-        ],
-        "to" => [
-            ["email" => $email,]
-        ],
-        "subject" => $subject,
-        "htmlContent" => $html,
-        "textContent" => $text
-    ];
-    curl_setopt_array(
-        $curl,
-        [
-            CURLOPT_URL             => "https://api.sendinblue.com/v3/smtp/email",
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_ENCODING        => "",
-            CURLOPT_MAXREDIRS       => 10,
-            CURLOPT_TIMEOUT         => 30,
-            CURLOPT_HTTP_VERSION    => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST   => "POST",
-            CURLOPT_POSTFIELDS      => json_encode($post),
-            CURLOPT_HTTPHEADER      => [
-                "Accept: application/json",
-                "Content-Type: application/json",
-                "api-key: " . $_ENV['SIB_API_TOKEN'],
+
+error_log("civicpower_send_email via : ".$_ENV['GW_MAIL'], 3, $_ENV['LOG_ERROR_CRON']);
+    # Mail
+    if ( isset($_ENV['GW_MAIL']) && ($_ENV['GW_MAIL']=="GMAIL") ) {
+
+        // Create email https://github.com/PHPMailer/PHPMailer
+            $mail               =   new PHPMailer(true);
+            try {
+                //Server settings
+                    if ( isset($_ENV['MAIL_DEBUG']) && ($_ENV['MAIL_DEBUG']==TRUE) ) {
+                        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+                    }
+                    $mail->CharSet = 'UTF-8';
+                    //$mail->ContentType = 'text/html';
+                    $mail->isSMTP();
+                    $mail->Host         =   'mail.gandi.net'; 
+                    $mail->SMTPAuth   = true;
+                    $mail->Username     =   ( ( isset($_ENV['GW_MAIL_SMTP_USER'])&&($_ENV['GW_MAIL_SMTP_USER']<>"") ) ? $_ENV['GW_MAIL_SMTP_USER'] : "");
+                    $mail->Password     =   ( ( isset($_ENV['GW_MAIL_SMTP_PASSWD'])&&($_ENV['GW_MAIL_SMTP_PASSWD']<>"") ) ? $_ENV['GW_MAIL_SMTP_PASSWD'] : "");
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = 587;    
+
+                //Recipients
+                    $mail->setFrom(( ( isset($sender_email)&&($sender_email<>"") ) ? $sender_email : $_ENV['GW_MAIL_EMAIL']), ( ( isset($sender_name)&&($sender_name<>"") ) ? $sender_name : $_ENV['GW_MAIL_NAME']));
+                    $mail->addAddress( ( ( isset($email)&&($email<>"") ) ? $email : "") );
+                    $mail->addReplyTo(( ( isset($sender_email)&&($sender_email<>"") ) ? $sender_email : $_ENV['GW_MAIL_EMAIL']), ( ( isset($sender_name)&&($sender_name<>"") ) ? $sender_name : $_ENV['GW_MAIL_NAME']));
+                    //$mail->addCC('cc@example.com');
+                    //$mail->addBCC('bcc@example.com');
+
+                // Content
+                    $mail->isHTML(true);                                  // Set email format to HTML
+                    $mail->Subject = $subject;
+                    $mail->Body    = $html;
+                    $mail->AltBody = $text;
+
+                    $response = $mail->send();
+//error_log($civicpower->toolbox->vardump($response));
+                    if ($mail->ErrorInfo) { $res = ["status" => "error", "message" => $mail->ErrorInfo]; }
+                    else { $res = ["status" => "success", "message" => $response]; }  
+            } catch (Exception $e) {
+                error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+            }
+
+                //$mail->CharSet = 'UTF-8';
+                //$mail->ContentType = 'text/html';
+            //    $mail->IsSMTP();
+            // // Debug level (2 full info)
+            //     $mail->SMTPDebug    =   0;
+            // // SMTP auth
+            //     $mail->SMTPAuth     =   true;
+            //     $mail->SMTPSecure   =   'tls';
+            //     $mail->Host         =   'mail.gandi.net';
+            //     $mail->Port         =   587;
+            //     $mail->Username     =   ( ( isset($_ENV['GW_MAIL_SMTP_USER'])&&($_ENV['GW_MAIL_SMTP_USER']<>"") ) ? $_ENV['GW_MAIL_SMTP_USER'] : "");
+            //     $mail->Password     =   ( ( isset($_ENV['GW_MAIL_SMTP_PASSWD'])&&($_ENV['GW_MAIL_SMTP_PASSWD']<>"") ) ? $_ENV['GW_MAIL_SMTP_PASSWD'] : "");
+            // From
+            //    $mail->setFrom( ( ( isset($sender_email)&&($sender_email<>"") ) ? $sender_email : "") );
+            // To
+            //    $mail->addAddress( ( ( isset($email)&&($email<>"") ) ? $email : "") );
+            // Subject
+                //$mail->Subject      =   $subject;
+            // Body
+                //$mail->AltBody      =   $text;
+            // Message
+                //$mail->MsgHTML($text);
+        // Do we send?
+            //$result = $mail->send();
+
+    }
+    else {
+error_log("\nMAIL VIA SIB\n", 3, $_ENV['LOG_ERROR_CRON']);
+        $curl = curl_init();
+        $post = [
+            "sender" => [
+                "name" => $sender_name,
+                "email" => $sender_email
             ],
-        ]
-    );
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
-    if (curl_getinfo($curl)["http_code"]<>"200") {
-        debugMailer(
-            array('variables'   => get_defined_vars()
-                 ,'subject'     => "Can't reach curl call: ".curl_getinfo($curl)["http_code"]
-                 ,'message'     => "Request: email to: ".$email
-                    ."<BR>"."function: ".__FUNCTION__
-                    ."<BR>"."from url: ".$GLOBALS['URL']
-            ) 
+            "to" => [
+                ["email" => $email,]
+            ],
+            "subject" => $subject,
+            "htmlContent" => $html,
+            "textContent" => $text
+        ];
+        curl_setopt_array(
+            $curl,
+            [
+                CURLOPT_URL             => "https://api.sendinblue.com/v3/smtp/email",
+                CURLOPT_RETURNTRANSFER  => true,
+                CURLOPT_ENCODING        => "",
+                CURLOPT_MAXREDIRS       => 10,
+                CURLOPT_TIMEOUT         => 30,
+                CURLOPT_HTTP_VERSION    => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST   => "POST",
+                CURLOPT_POSTFIELDS      => json_encode($post),
+                CURLOPT_HTTPHEADER      => [
+                    "Accept: application/json",
+                    "Content-Type: application/json",
+                    "api-key: " . $_ENV['SIB_API_TOKEN'],
+                ],
+            ]
         );
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        if (curl_getinfo($curl)["http_code"]<>"200") {
+            debugMailer(
+                array('variables'   => get_defined_vars()
+                     ,'subject'     => "Can't reach curl call: ".curl_getinfo($curl)["http_code"]
+                     ,'message'     => "Request: email to: ".$email
+                        ."<BR>"."function: ".__FUNCTION__
+                        ."<BR>"."from url: ".$GLOBALS['URL']
+                ) 
+            );
+        }
+        curl_close($curl);
+        if ($err) {
+            $res = ["status" => "error", "message" => $err,];
+        } else {
+            $res = ["status" => "success", "message" => $response,];
+        }
     }
-    curl_close($curl);
-    if ($err) {
-        $res = ["status" => "error", "message" => $err,];
-    } else {
-        $res = ["status" => "success", "message" => $response,];
-    }
+    
     return $res;
 }
 function civicpower_send_sms($mobile_phone_number, $text, $sender = "Civicpower", $user_id="") {
@@ -743,7 +825,7 @@ function cp_mail_shortcode($to, $link, $ballot_id) {
     $possible_len = strlen($possible);
     $res = '';
     for ($i = 0; $i < $length; $i++) {
-        $res .= $possible[rand(0, $possible_len - 1)];
+        $res .= $possible[random_int(0, $possible_len - 1)];
     }
     $res = 'ML-' . $res;
     $nb_already = intval(sql_unique("
@@ -841,8 +923,40 @@ function civicpower_invoke_ballot_rejected($ballot_id) {
         civicpower_enqueue_sms($user['user_phone_international'], $sms_text, $unicite, $hashtag);
     }
 }
+function civicpower_remove_options_aucun_if_not_qcm($ballot_id) {
+    $qtab = sql("
+        SELECT *
+        FROM bal_question
+        WHERE question_ballot_id = '".for_db($ballot_id)."'
+        AND question_active = '1'
+    ");
+    $options_aucun = [];
+    foreach($qtab as $k => $v){
+        if($v['question_nb_vote_min']==1 &&  $v['question_nb_vote_max']==1){
+            $options = sql("
+                SELECT *
+                FROM bal_option
+                WHERE option_question_id = '".for_db($v['question_id'])."'
+                AND (
+                    option_can_be_disabled = '1'
+                    AND option_title LIKE 'Aucun'
+                )
+                AND option_active = '1'
+            ");
+            foreach($options as $kk => $vv){
+                $options_aucun[] = $vv['option_id'];
+            }
+        }
+    }
+    sql("
+        UPDATE bal_option SET
+        option_active = '0'
+        WHERE option_id IN ('".implode("','", $options_aucun )."')
+    ");
+}
 function civicpower_invoke_ballot_accepted($ballot_id) {
     $ballot = civicpower_ballot_and_asker($ballot_id);
+    civicpower_remove_options_aucun_if_not_qcm($ballot_id);
     $user = sql_shift("
         SELECT usr_user.*
         FROM usr_user
@@ -929,7 +1043,7 @@ function civicpower_datetime_rfc($str){
     return strftime('%Y-%m-%dT%H:%M', strtotime($str));
 }
 function civicpower_free_user_salt() {
-    $salt   = sha1(uniqid().mt_rand(0,9999).time());
+    $salt   = hash('sha256',uniqid().random_int(0,9999).time());
     $nb     = intval(sql_unique("
         SELECT COUNT(*) AS nb
         FROM usr_user

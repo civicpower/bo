@@ -2,8 +2,8 @@
 function something_exists($array,$what=null){
 	if(!is_null($what) && is_array($what)){
 		$res = true;
-		if(count($what)>0){
-			foreach($what as $k=>$v){
+		if(!empty($what)){
+			foreach($what as $v){
 				$res &= something_exists($array,$v);
 			}
 		}else{
@@ -12,25 +12,21 @@ function something_exists($array,$what=null){
 		return $res;
 	}else{
 		$res=false;
-		if(isset($array)){
-			if(is_array($array)){
-				if(!is_null($what)){
-					if(count($array)>0){
-						if(isset($array[$what])){
-							if(is_array($array[$what])){
-								$res=count($array[$what])>0;
-							}else{
-								$res=strlen($array[$what])>0;
-							}
-						}
-					}
-				}else{
-					if(count($array)>0){
-						$res=true;
-					}
-				}
-			}
-		}
+        if (isset($array) && is_array($array)) {
+            if (!is_null($what)) {
+                if (!empty($array) && isset($array[$what])) {
+                    if (is_array($array[$what])) {
+                        $res = count($array[$what]) > 0;
+                    } else {
+                        $res = strlen($array[$what]) > 0;
+                    }
+                }
+            } else {
+                if (!empty($array)) {
+                    $res = true;
+                }
+            }
+        }
 		return $res;
 	}
 }
@@ -80,13 +76,22 @@ function gsomething($array,$what=null){
 	return $res;
 }
 function gall($what=null){
-	$res=gget($what);if(is_null($res)){
-	$res=gpost($what);if(is_null($res)){
-	$res=grequest($what);if(is_null($res)){
-	$res=gfiles($what);if(is_null($res)){
-	$res=gsession($what);if(is_null($res)){
-	$res=gcookie($what);
-	}}}}}
+    $res = gget($what);
+    if (is_null($res)) {
+        $res = gpost($what);
+        if (is_null($res)) {
+            $res = grequest($what);
+            if (is_null($res)) {
+                $res = gfiles($what);
+                if (is_null($res)) {
+                    $res = gsession($what);
+                    if (is_null($res)) {
+                        $res = gcookie($what);
+                    }
+                }
+            }
+        }
+    }
 	return $res;
 }
 function gget($what=null){
@@ -109,50 +114,5 @@ function gcookie($what=null){
 }
 function gsession($what=null){
 	return gsomething($_SESSION,$what);
-}
-function remember($lib,$value=null){
-	if(!is_null($value)){
-		$_SESSION[$lib]=$value;
-		setcookie($lib,$value,time()+265*24*3600*10,'/');
-	}else{
-		if(session_exists($lib)){
-			return gsession($lib);
-		}elseif(cookie_exists($lib)){
-			return gcookie($lib);
-		}
-	}
-	return '';
-}
-function file_post_contents($url,$headers=false) {
-    $url = parse_url($url);
-	//print_r($url);echo BN.BN;
-    if (!isset($url['port'])) {
-      if ($url['scheme'] == 'http') { $url['port']=80; }
-      elseif ($url['scheme'] == 'https') { $url['port']=443; }
-    }
-    $url['query']=isset($url['query'])?$url['query']:'';
-
-    $url['protocol']=$url['scheme'].'://';
-    $eol="\r\n";
-
-    $headers =  "POST ".$url['protocol'].$url['host'].$url['path']." HTTP/1.0".$eol.
-                "Host: ".$url['host'].$eol.
-                "Referer: ".$url['protocol'].$url['host'].$url['path'].$eol.
-                "Content-Type: application/x-www-form-urlencoded".$eol.
-                "Content-Length: ".strlen($url['query']).$eol.
-                $eol.$url['query'];
-    $fp = fsockopen($url['host'], $url['port'], $errno, $errstr, 30);
-    if($fp) {
-      fputs($fp, $headers);
-      $result = '';
-      while(!feof($fp)) { $result .= fgets($fp, 128); }
-      fclose($fp);
-      if (!$headers) {
-        //removes headers
-        $pattern="/^.*\r\n\r\n/s";
-        $result=preg_replace($pattern,'',$result);
-      }
-      return $result;
-    }
 }
 ?>

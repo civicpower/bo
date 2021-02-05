@@ -14,8 +14,31 @@
         bind_cities();
         bind_admin();
         bind_cb_asap();
+        bind_question_type();
     });
 
+    function bind_question_type() {
+        $(document).on("change","select.select-question-type",function(){
+            var $select = $(this);
+            var $parent = $select.closest(".card-question");
+            var value = $select.val();
+            var list = ["qcm","qcu"];
+            for(var i in list){
+                if(list[i]!=value){
+                    $parent.removeClass("type-"+String(list[i]));
+                }
+
+            }
+            if(! $parent.hasClass("type-"+String(value))){
+                $parent.addClass("type-"+String(value));
+            }
+            if(value=="qcu"){
+                $parent.find(".div-qcm").find(".input-nb-choice").val(1).trigger("change");
+            }else{
+                $parent.find(".div-qcm").find(".input-nb-choice-max").val(2).trigger("change");
+            }
+        });
+    }
     function bind_cb_asap() {
         $(".cb_asap").on("change", function () {
             var value = $(this).val();
@@ -315,7 +338,7 @@
                         }
                         $clone.attr("data-bfilter_id", i);
                         $clone.find(".btn-remove-filter").attr("data-bfilter_id", i);
-                        $clone.find(".info-box-icon").addClass(type_lib == "email" ? "bg-warning" : "bg-success");
+                        $clone.find(".info-box-icon").addClass(type_lib == "email" ? "bg-cp-grey" : "bg-cp-green");
                         $clone.find(".fas").addClass(type_lib == "email" ? "fa-envelope" : "fa-phone");
                         $clone.find(".voter-lib").text(val);
                         $clone.appendTo("#voters-list");
@@ -487,7 +510,7 @@
             $("#modal-body-publish-ok").slideUp("fast");
             $("#modal-body-publish-quota").slideUp("fast");
         });
-        $("#btn-open-publish").on("click", function () {
+        $(".btn-open-publish").on("click", function () {
             $.ajax({
                 type: "POST",
                 url: "/ballot.php",
@@ -668,7 +691,7 @@
                     value: $input.val()
                 },
                 success: function (jsone) {
-                    project_blink($input, "bg-success", 2);
+                    project_blink($input, "bg-cp-green", 2);
                     console.log(jsone.data.option_id);
                 },
                 error: function (res) {
@@ -707,7 +730,7 @@
                         rank: $question_target.find("li.option-item").length,
                     },
                     success: function (jsone) {
-                        project_blink($option, "bg-warning", 2);
+                        project_blink($option, "bg-cp-green", 2);
                         console.log(jsone.data.option_id);
                         $option.attr("data-option_id", jsone.data.option_id);
                     },
@@ -795,6 +818,21 @@
         return res;
     }
 
+    function add_option_fixe(label,id,$this_question,rank,can_be_disabled) {
+        var $init_option = $(".option-item-stock li.option-item").first();
+        var $clone_option = $init_option.clone();
+        if(can_be_disabled){
+            $clone_option.addClass("can_be_disabled");
+        }
+        $clone_option.addClass("option-"+String(rank));
+        $clone_option.appendTo($this_question.find(".option-list-div .option-list-fixe"));
+        $clone_option.slideDown("fast", function () {
+            var $option = $(this);
+            $option.find("input:first").val(label).attr("disabled", true);
+            project_blink($option, "bg-cp-green", 2);
+            $option.attr("data-option_id", id);
+        });
+    }
 
     function bind_question() {
         $("#btn-add-question").on("click", function () {
@@ -825,19 +863,11 @@
                         success: function (jsone) {
                             console.log(jsone.data.question_id);
                             $this_question.attr("data-question_id", jsone.data.question_id);
-                            project_blink($this_question, "bg-warning", 2);
-                            if (true) {
-                                var $init_option = $(".option-item-stock li.option-item").first();
-                                var $clone_option = $init_option.clone();
-                                $clone_option.appendTo($this_question.find(".option-list-div .option-list-fixe"));
-                                $clone_option.slideDown("fast", function () {
-                                    var $option = $(this);
-                                    $option.find("input:first").val("Ne se prononce pas").attr("disabled", true);
-                                    project_blink($option, "bg-warning", 2);
-                                    $option.attr("data-option_id", jsone.data.option_id);
-                                });
-
-                            }
+                            project_blink($this_question, "bg-cp-green", 2);
+                            add_option_fixe("S'abstient",jsone.data.option_id_sabstient,$this_question,996,true);
+                            add_option_fixe("Vote blanc",jsone.data.option_id_vote_blanc,$this_question,997,true);
+                            add_option_fixe("Aucun",jsone.data.option_id_aucun,$this_question,998,true);
+                            add_option_fixe("Ne se prononce pas",jsone.data.option_id_nspp,$this_question,999,true);
                         },
                         error: function () {
                             $this_question.slideUp("fast", function () {
@@ -851,12 +881,29 @@
             });
         });
         $(document).on("click", ".btn-save-question", function () {
+
             var $btn = $(this);
-            $btn.parent().find("input[data-field]").each(function () {
-                var $input = $(this);
-                setTimeout(function () {
-                    project_blink($input, "bg-success", 2);
-                }, Math.random() * 200);
+            $.ajax({
+                type: "POST",
+                url: "/ballot.php",
+                dataType: "json",
+                data: {
+                    action: "check_ballot_integrity",
+                    ballot_id: $("#ballot_id").val()
+                },
+                success: function (jsone) {
+                    $btn.parent().find("input[data-field]").each(function () {
+                        var $input = $(this);
+                        setTimeout(function () {
+                            project_blink($input, "bg-cp-green", 2);
+                        }, Math.random() * 100);
+                    });
+                },
+                error: function (res) {
+                    var jsone = res.responseJSON;
+                    console.log(jsone);
+                    alert(jsone.message);
+                }
             });
         });
         $(document).on("click", "button.btn-question-up,button.btn-question-down", function () {
@@ -881,13 +928,13 @@
                     $('html').animate({
                         scrollTop: $cur.offset().top
                     }, 250, function () {
-                        project_blink($cur, "bg-warning", 2);
+                        project_blink($cur, "bg-cp-green", 2);
                     });
                 });
             });
 
         });
-        $(document).on("change", ".card-question input[data-field^='question_']", function () {
+        $(document).on("change", ".card-question input[data-field^='question_']", function (e) {
             var $input = $(this);
             $question = $input.closest(".card-question");
             $.ajax({
@@ -901,10 +948,14 @@
                     value: $input.val()
                 },
                 success: function (jsone) {
-                    project_blink($input, "bg-success", 2);
+                    project_blink($input, "bg-cp-green", 2);
                 },
-                error: function () {
-                    alert("Une erreur est survenue");
+                error: function (jsone,b,c) {
+                    if(typeof jsone.responseJSON.message == "string"){
+                        alert(jsone.responseJSON.message);
+                    }else{
+                        alert("Une erreur est survenue");
+                    }
                 }
             });
         });

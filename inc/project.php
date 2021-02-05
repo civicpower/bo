@@ -1,4 +1,8 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 function project_literal($str){
     return '{literal}'.$str.'{/literal}';
 }
@@ -58,30 +62,6 @@ function error_404(&$fw){
 	$fw->smarty->display('404.tpl');
 	mise_en_cache();
 }
-function project_referer(){
-	$res = '';
-	if(isset($_SERVER['HTTP_REFERER'])){
-		$tmp = $_SERVER['HTTP_REFERER'];
-		if(is_string($tmp) && strlen($tmp) > 0 && strlen($tmp) < 500){
-			$tmp = parse_url($tmp);
-			if(isset($tmp['host'])){
-				$host = $tmp['host'];
-				if(is_string($host) && strlen($host) > 0 && strlen($host) < 500){
-					if(!preg_match("~".$_ENV['SITE_URL_SHORT']."$~",$host)){
-						$res = $_SERVER['HTTP_REFERER'];
-						setcookie('referer',$res,time() + 3600 * 24 * 365 * 2,'/');
-					}
-				}
-			}
-		}
-	}
-	if($res == ''){
-		if(cookie_exists('referer')){
-			$res = gcookie('referer');
-		}
-	}
-	return $res;
-}
 function project_canonical($q){
 	$canonical = $q;
 	$canonical = strtolower($canonical);
@@ -112,7 +92,7 @@ function project_add_jquery_cdn(&$fw){
 	$fw->add_js( 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js');
 }
 function project_crypt($string,$salt=""){
-	return sha1($_ENV['GLOBAL_SALT'].$string.$salt);
+	return hash('sha256',$_ENV['GLOBAL_SALT'].$string.$salt);
 }
 function project_md5_db($sql_language,$string,$salt=""){
 	if($sql_language){
@@ -145,10 +125,10 @@ function project_random_reference(){
     $chars1 = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
     $chars2 = '23456789';
     for($i=0;$i<$nb1;$i++){
-        $str.=$chars1[rand(0, strlen($chars1)-1)];
+        $str.=$chars1[random_int(0, strlen($chars1)-1)];
     }
     for($i=0;$i<$nb2;$i++){
-        $str.=$chars2[rand(0, strlen($chars2)-1)];
+        $str.=$chars2[random_int(0, strlen($chars2)-1)];
     }
     return $str;
 }
@@ -213,7 +193,6 @@ function project_file_get_contents($file){
 }
 
 project_deny_referer_list();
-project_referer();
 
 
 /* 

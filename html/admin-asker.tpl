@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="card card-primary card-outline">
+        <div class="card card-gray-dark card-outline">
             <div class="card-header">
                 <div class="card-title">Infos</div>
             </div>
@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card card-primary card-outline">
+        <div class="card card-gray-dark card-outline">
             <div class="card-header">
                 <div class="card-title">Asker Type</div>
             </div>
@@ -51,7 +51,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card card-primary card-outline">
+        <div class="card card-gray-dark card-outline">
             <div class="card-header">
                 <div class="card-title">Consultations</div>
             </div>

@@ -6,7 +6,7 @@
 </div>
 
 <div class="login-box">
-    <div class="card card-outline card-primary">
+    <div class="card card-outline card-gray-dark">
         <div class="card-header text-center">
             <h1>{$smarty.env.LOGO_NAME}</h1>
         </div>

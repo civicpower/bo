@@ -29,14 +29,14 @@
             Vous devez vous assurer au préalable que vous avez récolté leur consentement à être ainsi contacté par vous au sens du RGPD.
         </div>
         <div class="col-lg-6">
-            <button {$input_disabled} id="btn-import-file" class="btn btn-file btn-lg btn-primary btn-block">
+            <button {$input_disabled} id="btn-import-file" class="btn btn-file btn-lg text-white bg-cp-purple btn-block">
                 <i class="fa fa-paperclip"></i>
                 J'importe un fichier de votants
                 <input {$input_disabled} type="file" id="voters-file"/>
             </button>
         </div>
         <div class="col-lg-6">
-            <button {$input_disabled} class="btn btn-lg btn-primary btn-block" id="btn-voters-write">
+            <button {$input_disabled} class="btn btn-lg bg-cp-purple text-white btn-block" id="btn-voters-write">
                 <i class="fa fa-pen"></i>
                 J'écris la liste des votants
             </button>

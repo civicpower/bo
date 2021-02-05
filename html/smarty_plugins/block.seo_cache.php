@@ -15,7 +15,7 @@ function smarty_block_seo_cache($params, $content, &$smarty, &$open){
             if(!file_exists($cachepath)){
                 $cache = false;
             }else{
-                $rand = rand(0,100);
+                $rand = random_int(0,100);
                 if($rand<$prc){
                     $cache = false;
                 }

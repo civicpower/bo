@@ -231,6 +231,7 @@ function local_action_option_rank($user) {
             UPDATE bal_option SET
             option_rank = '" . for_db($v['rank']) . "'
             WHERE option_id = '" . for_db($v['option_id']) . "'
+            AND option_can_be_deleted = 1
         ");
     }
     ajax_success("Ordre de Tri mis à jour");
@@ -327,6 +328,7 @@ function local_action_check_ballot_integrity($user) {
     $ballot_id = ajax_assert_exists("ballot_id", true, true);
     ajax_assert_user_can_manage("bal_ballot", $ballot_id, $user);
     ajax_assert_editable("bal_ballot", $ballot_id, $user);
+    ajax_assert_publishable_ballot($ballot_id);
     $questions = sql("
         SELECT *, COUNT(option_id) AS nb_option
         FROM bal_question
@@ -338,7 +340,7 @@ function local_action_check_ballot_integrity($user) {
     if(count($questions)==0){
         ajax_error("Votre consultation doit comporter au moins une question","ballot_fail",$questions);
     }
-    foreach($questions as $k => $v){
+    foreach($questions as $v){
         if($v["nb_option"]<2){
             ajax_error("Chaque question posée doit avoir au moins deux réponses possibles","ballot_fail",$questions);
         }
@@ -593,14 +595,49 @@ function local_action_add_question($user) {
         SET question_ballot_id = '" . for_db($ballot_id) . "',
         question_rank = '" . for_db($rank) . "'
     ");
-    $option_id = sql("
+    $option_id_sabstient = sql("
+        INSERT INTO bal_option SET
+        option_question_id = '" . for_db($question_id) . "',
+        option_title = 'S\'abstient',
+        option_can_be_disabled = '1',
+        option_rank = '996',
+        option_can_be_deleted = '1'
+    ");
+    $option_id_vote_blanc = sql("
+        INSERT INTO bal_option SET
+        option_question_id = '" . for_db($question_id) . "',
+        option_title = 'Vote blanc',
+        option_can_be_disabled = '1',
+        option_rank = '997',
+        option_can_be_deleted = '1'
+    ");
+    $option_id_aucun = sql("
+        INSERT INTO bal_option SET
+        option_question_id = '" . for_db($question_id) . "',
+        option_title = 'Aucun',
+        option_can_be_disabled = '1',
+        option_rank = '998',
+        option_can_be_deleted = '1'
+    ");
+    $option_id_nspp = sql("
         INSERT INTO bal_option SET
         option_question_id = '" . for_db($question_id) . "',
         option_title = 'Ne se prononce pas',
+        option_can_be_disabled = '1',
         option_rank = '999',
-        option_can_be_deleted = '0'
+        option_can_be_deleted = '1'
     ");
-    ajax_success("Question ajoutée", "question_added", ["question_id" => $question_id, "option_id" => $option_id]);
+    ajax_success(
+        "Question ajoutée",
+        "question_added",
+        [
+            "question_id" => $question_id,
+            "option_id_sabstient" => $option_id_sabstient,
+            "option_id_vote_blanc" => $option_id_vote_blanc,
+            "option_id_aucun" => $option_id_aucun,
+            "option_id_nspp" => $option_id_nspp,
+        ]
+    );
 }
 function local_action_add_option($user) {
     $question_id = ajax_assert_exists("question_id", true, true);
@@ -617,10 +654,26 @@ function local_action_add_option($user) {
 function local_action_update_question($user) {
     $question_id = ajax_assert_exists("question_id", true, true);
     $field = ajax_assert_exists("field");
-    if (!in_array($field, ['question_title', 'question_description'])) {
+    if (!in_array($field, [
+        'question_title',
+        'question_description',
+        'question_nb_vote_min',
+        'question_nb_vote_max'
+    ])) {
         ajax_error("Champ inconnu", "unknown_field");
     }
     $value = ajax_assert_exists("value");
+    if(in_array($field,[
+        'question_nb_vote_min',
+        'question_nb_vote_max'
+    ])){
+        if(!is_numeric($value)){
+            ajax_error("Valeur non numérique", "not_numeric");
+        }
+        if($value<=0){
+            ajax_error("Merci de choisir une valeur positive", "not_positive");
+        }
+    }
     ajax_assert_user_can_manage("bal_question", $question_id, $user);
     ajax_assert_editable("bal_question", $question_id, $user);
     sql("
@@ -815,6 +868,7 @@ function local_check_ballot_exists(&$fw, $user) {
         }
         $ballot = sql_shift("
             SELECT
+                1 AS ballot_asap,
                 NOW() + INTERVAL $nb_hour_start HOUR AS ballot_start,
                 NOW() + INTERVAL $nb_hour_start HOUR + INTERVAL $nb_second_duration SECOND AS ballot_end
         ");

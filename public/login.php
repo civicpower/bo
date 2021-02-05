@@ -8,6 +8,7 @@ $fw->set_body_class('login-page');
 $fw->smarty->assign('login_errors',$local_login_errors);
 $fw->include_css('login');
 $fw->include_js('login');
+$fw->add_js('sha1.min.js');
 $fw->set_canonical('/');
 $fw->smarty->display('login.tpl');
 $fw->go();
@@ -38,13 +39,13 @@ function local_login_errors(&$smarty){
 					    user_email = '" . for_db($login) . "'
 					    OR user_phone_international = '".for_db(civicpower_international_phone($login))."'
                     )
-					AND user_password = '".for_db(sha1($_ENV['GLOBAL_SALT'].$password))."'
+					AND user_password = '".for_db(hash('sha256',$_ENV['GLOBAL_SALT'].$password))."'
 					AND user_active = '1' AND user_ban = '0'
 				");
 				if(isset($user) && is_array($user) && count($user)>0 && isset($user['user_id']) && is_numeric($user['user_id']) && $user['user_id']>0){
 					$_SESSION['user'] = $user;
 					$user_token = civicpower_hash_db(false,$user['user_salt'],$_ENV['SALT_USER']);
-					setcookie($_ENV['LOGIN_COOKIE_NAME'],$user_token,time() + 365*24*60*60,'/','civicpower.io',true);
+					setcookie($_ENV['LOGIN_COOKIE_NAME'],$user_token,time() + 365*24*60*60,'/','civicpower.io',true,true);
 					rediriger_vers('/');
 					exit();
 				}else{

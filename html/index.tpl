@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-lg-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-info">
+        <div class="small-box bg-cp-purple text-white">
             <div class="inner">
                 <h3 id="nb_ballot">__</h3>
                 <p>consultations</p>
@@ -18,7 +18,7 @@
     <!-- ./col -->
     <div class="col-lg-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-success">
+        <div class="small-box bg-cp-green text-white">
             <div class="inner">
                 <h3 id="nb_vote">__<sup style="font-size: 20px">%</sup></h3>
                 <p>Votes</p>
@@ -39,7 +39,9 @@
                 <div class="icon">
                     <i class="ion ion-person"></i>
                 </div>
-                <a href="/admin-user-list" class="small-box-footer">Voir les users <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="/admin-user-list" class="small-box-footer">
+                    <span class="badge badge-warning"><i class="fas fa-crown"></i> Admin</span> Voir les utilisateurs <i class="fas fa-arrow-circle-right"></i>
+                </a>
             </div>
         </div>
     {/if}

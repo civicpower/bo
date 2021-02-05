@@ -43,6 +43,8 @@ function local_action($user){
                 "));
                 if($asker_nb<=0){
                     $res["message"][] = "Opération impossible";
+                }else if(get_nb_active_ballot_asker($asker_id)>0){
+                    $res["message"][] = "Vous avez des consultations actives. Veuillez attendre qu'elles se terminent pour pouvoir supprimer cet organisateur";
                 }
             }
         }

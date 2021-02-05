@@ -5,7 +5,7 @@
 <div class="d-none row">
     <div class="col-md-6">
         <!-- AREA CHART -->
-        <div class="card card-primary">
+        <div class="card card-gray-dark">
             <div class="card-header">
                 <h3 class="card-title">Area Chart</h3>
 

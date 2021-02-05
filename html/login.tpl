@@ -6,7 +6,7 @@
 </div>
 
 <div class="login-box">
-    <div class="card card-outline card-primary">
+    <div class="card card-outline card-gray-dark">
         <div class="card-header text-center">
             <h1>{$smarty.env.LOGO_NAME}</h1>
         </div>
@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input value="{$smarty.post.password|for_input}" name="password" type="password" class="form-control" placeholder="Mot de passe">
+                    <input value="{$smarty.post.password|for_input}" name="password" id="input_password" type="password" class="form-control" placeholder="Mot de passe">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -43,7 +43,7 @@
                         </div>
                     {/if}
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-block">Connexion</button>
+                        <button type="submit" class="btn-lg btn bg-cp-purple text-white btn-block">Connexion</button>
                     </div>
                 </div>
             </form>

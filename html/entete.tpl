@@ -19,12 +19,12 @@
 
 
       <li class="nav-item d-sm-inline-block mr-2">
-        <a class="btn btn-navbar bg-success nav-link bg-cp-green" href="{$smarty.env.APP_HOST}" role="button">
+        <a class="btn btn-navbar text-white nav-link bg-cp-darkpurple" href="{$smarty.env.APP_HOST}" role="button">
           <i class="fas fa-mobile-alt"></i><span class="d-none d-sm-inline"> &nbsp; Retourner à l'application</span>
         </a>
       </li>
       <li class="nav-item d-none d-sm-inline-block mr-2">
-        <a class="btn btn-navbar bg-success nav-link bg-cp-red" href="/ballot" role="button">
+        <a class="btn btn-navbar bg-cp-purple nav-link text-white" href="/ballot" role="button">
           <i class="fas fa-plus-square"></i><span> &nbsp; Nouvelle consultation</span>
         </a>
       </li>
@@ -49,7 +49,7 @@
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
-          <div class="col-sm-6">
+          <div class="col-12">
             <h1  class="m-0 html_title">{$HTML_TITLE}</h1>
           </div>
         </div>

@@ -5,6 +5,7 @@
     function bind_submit(){
         $("#form_login").on("submit",function(e){
             var username = String($("#input_login").val());
+            var password = String($("#input_password").val());
             if(username.length<=5){
                 local_error("Adresse email ou N° de mobile incorrect");
                 e.preventDefault();
@@ -13,6 +14,9 @@
                 local_error("L'Adresse email ou le N° de mobile ne peuvent pas contenir d'espace");
                 e.preventDefault();
                 return false;
+            }else{
+                $("#input_password").val(sha1(password));
+                return true;
             }
         });
     }

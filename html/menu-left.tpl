@@ -1,9 +1,9 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary bg-cp-blue">
+<aside class="main-sidebar sidebar-black-light">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
-        <img src="/images/logo-square.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">{$smarty.env.LOGO_NAME}</span>
+        <img src="/images/logo-square.png" alt="AdminLTE Logo" class="brand-image img-circle" style="opacity: .8">
+        <span class="brand-text text-black-50">{$smarty.env.LOGO_NAME}</span>
     </a>
 
     <div class="sidebar">
@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/ballot" class="nav-link bg-danger bg-cp-red">
+                    <a href="/ballot" class="nav-link bg-dark bg-cp-purple">
                         <i class="nav-icon fas fa-plus-square"></i>
                         <p>Nouvelle consultation</p>
                     </a>
