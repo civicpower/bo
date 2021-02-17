@@ -76,7 +76,8 @@
                 );
             }
         }
-        if (sizeof($queue_ids)>0) {
+        print_r($queue_ids);
+        if (count($queue_ids)>0) {
             sql("
                 UPDATE mail_queue SET queue_is_sent = '1' WHERE queue_id IN ('" . implode("','", $queue_ids ) . "')
             ");

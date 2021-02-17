@@ -244,7 +244,7 @@
                     <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                         <li class="nav-item">
                             <a
-                                    class="nav-link active "
+                                    class="nav-link active"
                                     id="custom-tabs-one-questions-tab"
                                     data-toggle="pill"
                                     href="#custom-tabs-one-questions"

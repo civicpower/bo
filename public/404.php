@@ -1,4 +1,5 @@
 <?php
+header("HTTP/1.0 404 Not Found");
 $user = must_be_connected();
 local_action($user);
 project_css_js($fw);

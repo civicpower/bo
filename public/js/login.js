@@ -15,7 +15,7 @@
                 e.preventDefault();
                 return false;
             }else{
-                $("#input_password").val(sha1(password));
+                $("#input_password").val(sha256(password));
                 return true;
             }
         });

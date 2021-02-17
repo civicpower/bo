@@ -7,8 +7,12 @@ Vous nous avez soumis la consultation suivante :
 {$ballot.ballot_title}
 <br>
 <br>
-Nous vous informons qu'elle n'a pas été validée par notre équipe de modération :
-nous vous invitons à vous connecter sur votre compte pour prendre connaissance de nos remarques et pouvoir modifier votre consultation le cas échéant.
+Nous vous informons qu'elle n'a pas été validée par notre équipe de modération pour le motif suivant :<br>
+
+<strong>{$ballot.ballot_rejection_reason}</strong><br><br>
+
+Nous vous invitons à vous connecter sur votre compte pour pouvoir modifier votre consultation le cas échéant.
+
 <br>
 <br>
 L'équipe Civicpower
